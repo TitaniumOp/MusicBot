@@ -25,7 +25,7 @@ user = Client(
     api_id=API_ID,
     api_hash=API_HASH,
 )
-Op = Client(SESSION_NAME, api_id=API_ID, api_hash=API_HASH, plugins={'root': 'handlers'})
+op = Client(SESSION_NAME, api_id=API_ID, api_hash=API_HASH, plugins={'root': 'handlers'})
 call_py = PyTgCalls(op)
 
 async def start_bot():
