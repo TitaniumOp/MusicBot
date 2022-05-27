@@ -26,18 +26,8 @@ user = Client(
     api_hash=API_HASH,
 )
 op = Client(SESSION_NAME, api_id=API_ID, api_hash=API_HASH, plugins={'root': 'handlers'})
-call_py = PyTgCalls(op)
+app = PyTgCalls(op)
 
-async def start_bot():
-    print("[INFO]: STARTING BOT CLIENT")
-    await bot.start()
-    print("[INFO]: STARTING PYTGCALLS'S CLIENT")
-    await call_py.start()
-    await idle()
-    print("[INFO]: STOPPING BOT & USERBOT")
-    await bot.stop()
+bot.run
+app.start
 
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(start_bot())
-BOT.run_until_disconnected()
