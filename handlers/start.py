@@ -3,7 +3,7 @@ import os
 import asyncio
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from main import bot
+from helpers.main import bot
 
 START_TEXT = """
 Hi <b>{}</b> 👋
