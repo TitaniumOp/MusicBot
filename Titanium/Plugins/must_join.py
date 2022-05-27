@@ -3,7 +3,7 @@ from pyrogram import Client, filters
 from helpers.main import bot 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden
-MUST_JOIN = TITANIUM_XYZ
+MUST_JOIN = "TITANIUM_XYZ"
 
 @bot.on_message(filters.incoming & filters.private, group=-1)
 async def must_join_channel(bot: Client, msg: Message):
