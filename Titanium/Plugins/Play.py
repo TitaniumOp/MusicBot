@@ -24,6 +24,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue, pop_an_item
 from helpers.admin_check import *
+from helpers.main import call_py, bot
 
 
 BUTTONS = InlineKeyboardMarkup(
@@ -41,7 +42,7 @@ BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
-
+LIVE_CHATS = []
 
 
 @bot.on_message(filters.command(["play", "vplay"]) & filters.group)
@@ -102,7 +103,7 @@ async def video_play(_, message):
             await message.reply_photo(thumb, caption=caps)
             await m.delete()
         else:            
-            await app.join_group_call(
+            await call_py.join_group_call(
                 chat_id,
                 damn(playlink),
                 stream_type=StreamType().pulse_stream
