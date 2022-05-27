@@ -44,6 +44,174 @@ BUTTONS = InlineKeyboardMarkup(
 )
 LIVE_CHATS = []
 
+async def skip_current_song(chat_id):
+    if chat_id in QUEUE:
+        chat_queue = get_queue(chat_id)
+        if len(chat_queue) == 1:
+            await app.leave_group_call(chat_id)
+            clear_queue(chat_id)
+            return 1
+        else:
+            title = chat_queue[1][0]
+            duration = chat_queue[1][1]
+            link = chat_queue[1][2]
+            playlink = chat_queue[1][3]
+            type = chat_queue[1][4]
+            Q = chat_queue[1][5]
+            thumb = chat_queue[1][6]
+            if type == "Audio":
+                await app.change_stream(
+                    chat_id,
+                    AudioPiped(
+                        playlink,
+                    ),
+                )
+            elif type == "Video":
+                if Q == "high":
+                    hm = HighQualityVideo()
+                elif Q == "mid":
+                    hm = MediumQualityVideo()
+                elif Q == "low":
+                    hm = LowQualityVideo()
+                else:
+                    hm = MediumQualityVideo()
+                await app.change_stream(
+                    chat_id, AudioVideoPiped(playlink, HighQualityAudio(), hm)
+                )
+            pop_an_item(chat_id)
+            await bot.send_photo(chat_id, photo = thumb,
+                                 caption = f"▶️ <b>Now playing:</b> [{title}]({link}) | `{type}` \n\n⏳ <b>Duration:</b> {duration}",
+                                 reply_markup = BUTTONS)
+            return [title, link, type, duration, thumb]
+    else:
+        return 0
+
+
+async def skip_item(chat_id, lol):
+    if chat_id in QUEUE:
+        chat_queue = get_queue(chat_id)
+        try:
+            x = int(lol)
+            title = chat_queue[x][0]
+            chat_queue.pop(x)
+            return title
+        except Exception as e:
+            print(e)
+            return 0
+    else:
+        return 0
+
+
+@app.on_stream_end()
+async def on_end_handler(_, update: Update):
+    if isinstance(update, StreamAudioEnded):
+        chat_id = update.chat_id
+        await skip_current_song(chat_id)
+
+
+@app.on_closed_voice_chat()
+async def close_handler(client: PyTgCalls, chat_id: int):
+    if chat_id in QUEUE:
+        clear_queue(chat_id)
+        
+
+async def yt_video(link):
+    proc = await asyncio.create_subprocess_exec(
+        "yt-dlp",
+        "-g",
+        "-f",
+        "best[height<=?720][width<=?1280]",
+        f"{link}",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        return 1, stdout.decode().split("\n")[0]
+    else:
+        return 0, stderr.decode()
+    
+
+async def yt_audio(link):
+    proc = await asyncio.create_subprocess_exec(
+        "yt-dlp",
+        "-g",
+        "-f",
+        "bestaudio",
+        f"{link}",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        return 1, stdout.decode().split("\n")[0]
+    else:
+        return 0, stderr.decode()
+
+
+@bot.on_callback_query()
+async def callbacks(_, cq: CallbackQuery):
+    user_id = cq.from_user.id
+    try:
+        user = await cq.message.chat.get_member(user_id)
+        admin_strings = ("creator", "administrator")
+        if user.status not in admin_strings:
+            is_admin = False
+        else:
+            is_admin = True
+    except ValueError:
+        is_admin = True        
+    if not is_admin:
+        return await cq.answer("You aren't an admin.")   
+    chat_id = cq.message.chat.id
+    data = cq.data
+    if data == "close":
+        return await cq.message.delete()
+    if not chat_id in QUEUE:
+        return await cq.answer("Nothing is playing.")
+
+    if data == "pause":
+        try:
+            await app.pause_stream(chat_id)
+            await cq.answer("Paused streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+      
+    elif data == "resume":
+        try:
+            await app.resume_stream(chat_id)
+            await cq.answer("Resumed streaming.")
+        except:
+            await cq.answer("Nothing is playing.")   
+
+    elif data == "stop":
+        await app.leave_group_call(chat_id)
+        clear_queue(chat_id)
+        await cq.answer("Stopped streaming.")  
+
+    elif data == "mute":
+        try:
+            await app.mute_stream(chat_id)
+            await cq.answer("Muted streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+            
+    elif data == "unmute":
+        try:
+            await app.unmute_stream(chat_id)
+            await cq.answer("Unmuted streaming.")
+        except:
+            await cq.answer("Nothing is playing.")
+            
+    elif data == "skip":
+        op = await skip_current_song(chat_id)
+        if op == 0:
+            await cq.answer("Nothing in the queue to skip.")
+        elif op == 1:
+            await cq.answer("Empty queue, stopped streaming.")
+        else:
+            await cq.answer("Skipped.")
+
 
 @bot.on_message(filters.command(["play", "vplay"]) & filters.group)
 async def video_play(_, message):
