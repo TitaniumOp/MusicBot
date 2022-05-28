@@ -113,13 +113,13 @@ def map(pos):
                     text="🛠 Source Code 🛠", url=f"https://github.com/TitaniumOp/MusicBot"
                 )
             ],
-            [InlineKeyboardButton(text="◀️Back", callback_data=f"help+{pos-1}")],
+            [InlineKeyboardButton(text="Back", callback_data=f"help+{pos-1}")],
         ]
     else:
         button = [
             [
-                InlineKeyboardButton(text="◀️Back", callback_data=f"help+{pos-1}"),
-                InlineKeyboardButton(text="Next▶️", callback_data=f"help+{pos+1}"),
+                InlineKeyboardButton(text="Back", callback_data=f"help+{pos-1}"),
+                InlineKeyboardButton(text="Next", callback_data=f"help+{pos+1}"),
             ],
         ]
     return button
