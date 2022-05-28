@@ -90,7 +90,7 @@ def help_answer(client, callback_query):
 
 def map(pos):
     if pos == 1:
-        button = [[InlineKeyboardButton(text="▶️", callback_data="help+2")]]
+        button = [[InlineKeyboardButton(text="Next▶️", callback_data="help+2")]]
     elif pos == len(tr.HELP_MSG) - 1:
         url = f"https://t.me/TITANIUMCHATS"
         button = [
@@ -113,13 +113,13 @@ def map(pos):
                     text="🛠 Source Code 🛠", url=f"https://github.com/TitaniumOp/MusicBot"
                 )
             ],
-            [InlineKeyboardButton(text="◀️", callback_data=f"help+{pos-1}")],
+            [InlineKeyboardButton(text="◀️Back", callback_data=f"help+{pos-1}")],
         ]
     else:
         button = [
             [
-                InlineKeyboardButton(text="◀️", callback_data=f"help+{pos-1}"),
-                InlineKeyboardButton(text="▶️", callback_data=f"help+{pos+1}"),
+                InlineKeyboardButton(text="◀️Back", callback_data=f"help+{pos-1}"),
+                InlineKeyboardButton(text="Next▶️", callback_data=f"help+{pos+1}"),
             ],
         ]
     return button
