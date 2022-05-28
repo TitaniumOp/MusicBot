@@ -42,7 +42,7 @@ def _start(client, message):
 
 
 @Client.on_message(filters.command("start") & ~filters.private & ~filters.channel)
-async def gstart(_, message: Message):
+async def gstart(_, message):
     await message.reply_text(
         f"""**🔴 Sumiko is online**""",
         reply_markup=InlineKeyboardMarkup(
