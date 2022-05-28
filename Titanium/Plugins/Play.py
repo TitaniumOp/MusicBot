@@ -20,6 +20,7 @@ from pytgcalls.types import (
 from pytgcalls.types.stream import StreamAudioEnded, StreamVideoEnded
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.errors import UserAlreadyParticipant, UserNotParticipant
 from helpers.queues import QUEUE, add_to_queue, get_queue, clear_queue, pop_an_item
 from helpers.admin_check import *
 from helpers.main import call_py, bot
@@ -279,7 +280,21 @@ async def video_play(_, message):
             add_to_queue(chat_id, yt.title, duration, link, playlink, doom, Q, thumb)
             await message.reply_photo(thumb, caption=cap, reply_markup=BUTTONS)
             await m.delete()
-    except Exception as e:
-        return await m.edit(str(e))
+    except UserNotParticipant:
+        try:
+            invitelink = (await bot.get_chat(message.chat.id)).invite_link
+            if not invitelink:
+                await bot.export_chat_invite_link(message.chat.id)
+                invitelink = (await bot.get_chat(message.chat.id)).invite_link
+            if invitelink.startswith("https://t.me/+"):
+                invitelink = invitelink.replace(
+                    "https://t.me/+", "https://t.me/joinchat/"
+                )
+            await call_py.join_chat(invitelink)
+            await remove_active_chat(message.chat.id)
+        except UserAlreadyParticipant:
+            pass
+        except Exception as e:
+            return await message.reply_text(f"❌ **userbot failed to join**\n\n**reason**: `{e}`")
     
     
