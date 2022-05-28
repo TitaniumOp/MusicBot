@@ -2,7 +2,7 @@
 import os
 import asyncio
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
 from helpers.main import bot
 
 
@@ -42,7 +42,7 @@ def _start(client, message):
 
 
 @Client.on_message(filters.command("start") & ~filters.private & ~filters.channel)
-async def gstart(_, message):
+async def gstart(_, message: Message):
     await message.reply_text(
         f"""**🔴 Sumiko is online**""",
         reply_markup=InlineKeyboardMarkup(
