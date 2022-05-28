@@ -25,7 +25,7 @@ from helpers.admin_check import *
 from helpers.main import bot, call_py
 
 app = call_py
-damn = "k"
+damn = fuck
 
 
 LIVE_CHATS = []
