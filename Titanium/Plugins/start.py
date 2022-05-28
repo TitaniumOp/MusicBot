@@ -90,7 +90,7 @@ def help_answer(client, callback_query):
 
 def map(pos):
     if pos == 1:
-        button = [[InlineKeyboardButton(text="Next▶️", callback_data="help+2")]]
+        button = [[InlineKeyboardButton(text="Next", callback_data="help+2")]]
     elif pos == len(tr.HELP_MSG) - 1:
         url = f"https://t.me/TITANIUMCHATS"
         button = [
