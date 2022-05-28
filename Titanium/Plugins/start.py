@@ -28,13 +28,13 @@ def _start(client, message):
                 ],
                 [
                     InlineKeyboardButton(
-                        "📲 Updates", url=f"https://t.me/{UPDATES_CHANNEL}"
+                        "📲 Updates", url=f"https://t.me/TITANIUM_XYZ"
                     ),
                     InlineKeyboardButton(
-                        "💬 Support", url=f"https://t.me/{SUPPORT_GROUP}"
+                        "💬 Support", url=f"https://t.me/TITANIUMCHATS"
                     ),
                 ],
-                [InlineKeyboardButton("🛠 Source Code 🛠", url=f"https://{SOURCE_CODE}")],
+                [InlineKeyboardButton("🛠 Source Code 🛠", url=f"https://github.com/TitaniumOp/MusicBot")],
             ]
         ),
         reply_to_message_id=message.message_id,
