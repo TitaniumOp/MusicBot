@@ -14,6 +14,14 @@
       "description": "A bot token from @BotFather",
       "required": true
     },
+    "ASSISTANT_NAME": {
+      "description": "Your assistant's username without @",
+      "required": true
+    },
+    "BOT_USERNAME": {
+      "description": "Your bot username without @",
+      "required": true
+    },
     "API_ID": {
       "description": "API_ID from my.telegram.org/apps",
       "required": true
